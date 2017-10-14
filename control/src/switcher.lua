@@ -8,21 +8,21 @@ local modem = peripheral.wrap("bottom")
 modem.open(CHANNEL_REPLY)
 
 function red(event)
-  if rs.getInput("left") then
-    modem.transmit(CHANNEL_ANNOUNCE, CHANNEL_REPLY, "ANNOUNCE")
-  end
+	if rs.getInput("left") then
+		modem.transmit(CHANNEL_ANNOUNCE, CHANNEL_REPLY, "ANNOUNCE")
+	end
 end
 
 function switch(event,side,senderCh,replyChannel,message,distance)
-  print(message)
-  if distance < MAX_DISTANCE then
-    if message == "left" then
-      redstone.setOutput("right", true)
-    end
-    if message == "right" then
-      redstone.setOutput("right", false)
-    end
-  end
+	print(message)
+	if distance < MAX_DISTANCE then
+		if message == "left" then
+			redstone.setOutput("right", true)
+		end
+		if message == "right" then
+			redstone.setOutput("right", false)
+		end
+	end
 end
 
 async.addEventListener("redstone", red)

@@ -24,69 +24,69 @@ local routines = {}
 local listeners = {}
 
 function runAsync (func)
-  assert( type(func) == "function" )
-  
-  table.insert(routines, coroutine.create(func))
+	assert( type(func) == "function" )
+
+	table.insert(routines, coroutine.create(func))
 end
 
 function addEventListener (event, listener)
-  assert( type(event) == "string" )
-  assert( type(listener) == "function" )
-  
-  if not listeners[event] then
-    listeners[event] = {}
-  end
-  
-  table.insert(listeners[event], listener)
+	assert( type(event) == "string" )
+	assert( type(listener) == "function" )
+
+	if not listeners[event] then
+		listeners[event] = {}
+	end
+
+	table.insert(listeners[event], listener)
 end
 
 function removeEventListener (event,listener)
-  assert( type(event) == "string" )
-  assert( type(listener) == "function" )
-  
-  for key, listen in pairs(listeners[event]) do
-    if listen == listener then
-      table.remove(listeners[event], key)
-      return true
-    end
-    return false
-  end
+	assert( type(event) == "string" )
+	assert( type(listener) == "function" )
+
+	for key, listen in pairs(listeners[event]) do
+		if listen == listener then
+			table.remove(listeners[event], key)
+			return true
+		end
+		return false
+	end
 end
 
 function init(func)
-  if func then
-    runAsync(func)
-  end
-  
-  local eventData={}
-  local filters={}
-  local remove={}
-  
-  while true do 
-    for key,r in pairs(routines) do
-      if filters[r] == nil or filters[r] == eventData[1] or eventData[1] == "terminate" then
-        local ok, param = coroutine.resume( r, unpack(eventData))
-        if not ok then
-          error(param)
-        else
-          filters[r] = param
-        end
-      end
-      if coroutine.status(r) == "dead" then
-        table.insert(remove,key)
-        filters[r]=nil
-      end
-    end
-    
-    for key,i in pairs(remove) do
-      table.remove(routines,i)
-    end
-    
-    eventData = {os.pullEventRaw()}
-    if listeners[eventData[1]] then
-      for key, listener in pairs(listeners[eventData[1]]) do
-        runAsync(listener)
-      end
-    end
-  end
+	if func then
+		runAsync(func)
+	end
+
+	local eventData={}
+	local filters={}
+	local remove={}
+
+	while true do
+		for key,r in pairs(routines) do
+			if filters[r] == nil or filters[r] == eventData[1] or eventData[1] == "terminate" then
+				local ok, param = coroutine.resume( r, unpack(eventData))
+				if not ok then
+					error(param)
+				else
+					filters[r] = param
+				end
+			end
+			if coroutine.status(r) == "dead" then
+				table.insert(remove,key)
+				filters[r]=nil
+			end
+		end
+
+		for key,i in pairs(remove) do
+			table.remove(routines,i)
+		end
+
+		eventData = {os.pullEventRaw()}
+		if listeners[eventData[1]] then
+			for key, listener in pairs(listeners[eventData[1]]) do
+				runAsync(listener)
+			end
+		end
+	end
 end
