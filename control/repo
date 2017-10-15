@@ -1,0 +1,17 @@
+{
+  packs = {
+    switcher = {
+      "src/async.lua",
+      "src/switcher.lua",
+    },
+    pass = {
+      "src/async.lua",
+      "src/dest.lua",
+    },
+  },
+  files = {
+    [ "src/async.lua" ] = "93a784f2ad27d9a825e249da0c0e3a3e5212e3946f2ac3ac6d5c9961579a85ac",
+    [ "src/dest.lua" ] = "a8f425abb88cc26b0d24126a81906edaedcaf03da0088d6aa79850b0f68b45a4",
+    [ "src/switcher.lua" ] = "db2693e314e34988e56c65509c2ef0ea82a6d16e86f7469efe22659b72968c3b",
+  },
+}
